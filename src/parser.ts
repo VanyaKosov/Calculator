@@ -1,3 +1,5 @@
+export type Equation = (number | string)[];
+
 const operatorWeight = new Map<string, number>([
 	["-", 0],
 	["+", 0],
@@ -20,6 +22,7 @@ function tryReadNum(input: string): number {
 		if (!isDecimal && input[i] === ".") {
 			isDecimal = true;
 			num += ".";
+			continue;
 		}
 
 		break;
@@ -28,9 +31,9 @@ function tryReadNum(input: string): number {
 	return parseFloat(num);
 }
 
-export function parse(input: string): (number | string)[] {
+export function parse(input: string): Equation {
 	input = input.split(" ").join("");
-	let result: (number | string)[] = [];
+	let result: Equation = [];
 	let operators: Array<string> = [];
 
 	while (input.length > 0) {
