@@ -35,8 +35,13 @@ export class Pos {
     }
 }
 
-function evaluate(equation: Equation, x: number): number {
+export function evaluate(equation: Equation, x: number): number {
     let stack: Equation = [];
+    const pop = (): number => {
+        const val = stack.pop();
+        if (val === undefined) throw "Incorrect equation";
+        return val as number;
+    }
 
     for (let val of equation) {
         if (typeof val === 'number') {
@@ -52,16 +57,17 @@ function evaluate(equation: Equation, x: number): number {
         const tupleOperation = tupleOperations.get(val);
         if (tupleOperation) {
 
-            stack.push(tupleOperation(stack.pop() as number, stack.pop() as number));
+            stack.push(tupleOperation(pop(), pop()));
             continue;
         }
 
         const singleOperation = singleOperations.get(val);
         if (!singleOperation) throw val + " operation not defined";
-        stack.push(singleOperation(stack.pop() as number));
+        stack.push(singleOperation(pop()));
     }
 
-    return stack.pop() as number;
+    if (stack.length > 1) throw "Incorrect equation";
+    return pop();
 }
 
 export function approximateFunction(equation: Equation, params: Parameters, numSteps: number): Pos[][] {

@@ -87,6 +87,7 @@ export function parse(input: string): Equation {
 
 		if (input[0] == ")") {
 			while (operators[operators.length - 1] != "(") {
+				if (operators.length == 0) throw "Incorrect equation";
 				result.push(operators.pop()!);
 			}
 			operators.pop();
@@ -112,7 +113,9 @@ export function parse(input: string): Equation {
 	}
 
 	while (operators.length > 0) {
-		result.push(operators.pop()!);
+		const val = operators.pop()!;
+		if (val === '(') throw "Incorrect equation";
+		result.push(val);
 	}
 
 	return result;
