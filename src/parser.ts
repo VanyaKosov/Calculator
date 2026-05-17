@@ -32,7 +32,7 @@ function tryReadNum(input: string): number {
 }
 
 export function parse(input: string): Equation {
-	input = input.split(" ").join("");
+	input = input.split(" ").join("").toLowerCase();
 	let result: Equation = [];
 	let operators: Array<string> = [];
 

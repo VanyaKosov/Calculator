@@ -56,12 +56,27 @@ export function approximateFunction(equation: Equation, params: Parameters, numS
 
     const stepSize = (params.xMax - params.xMin) / numSteps;
     let segment: Pos[] = [];
+    let prevPos = new Pos(params.xMin, evaluate(equation, params.xMin));
     for (let x = params.xMin; x <= params.xMax; x += stepSize) {
-        segment.push(new Pos(x, evaluate(equation, x)));
-        // TODO: multiple segments (discontinuous function handling)
+        const pos = new Pos(x, evaluate(equation, x));
+        if (pos.y > params.yMax || pos.y < params.yMin) {
+            if (prevPos.y <= params.yMax && prevPos.y >= params.yMin) segment.push(pos);
+
+            if (segment.length > 0) {
+                segments.push(segment);
+                segment = [];
+            }
+
+            prevPos = pos;
+            continue;
+        }
+
+        if (segment.length == 0) segment.push(prevPos);
+        segment.push(pos);
+        prevPos = pos;
     }
 
-    segments.push(segment); // TODO: multiple segments
+    segments.push(segment);
 
     return segments;
 }

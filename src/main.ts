@@ -23,7 +23,9 @@ function updateOnClick() {
 	}
 
 	drawAxis(params);
-	drawGraph(params, approximateFunction(equation, params, 500));
+	const approximatedFunction = approximateFunction(equation, params, 1000);
+	drawGraph(params, approximatedFunction);
+	console.log(approximatedFunction);
 }
 
 function main(): void {

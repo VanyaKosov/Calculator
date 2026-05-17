@@ -96,16 +96,16 @@ export function drawAxis(params: Parameters): void {
 }
 
 export function drawGraph(params: Parameters, segments: Pos[][]): void {
-    ctx.beginPath();
-    ctx.strokeStyle = style.graph.color;
-    ctx.lineWidth = style.graph.thickness;
-
     for (let segment of segments) {
+        ctx.beginPath();
+        ctx.strokeStyle = style.graph.color;
+        ctx.lineWidth = style.graph.thickness;
+
         for (let i = 0; i < segment.length - 1; i++) {
             ctx.moveTo(toCanvasX(segment[i].x, params.xMin, params.xMax), toCanvasY(segment[i].y, params.yMin, params.yMax));
             ctx.lineTo(toCanvasX(segment[i + 1].x, params.xMin, params.xMax), toCanvasY(segment[i + 1].y, params.yMin, params.yMax));
         }
-    }
 
-    ctx.stroke();
+        ctx.stroke();
+    }
 }
