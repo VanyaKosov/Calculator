@@ -8,6 +8,22 @@ const operatorWeight = new Map<string, number>([
 	["^", 2]
 ]);
 
+const maxOpLength: number = 4; // Length of the longest operator
+const functions = new Map<string, string>([ // TODO: factorial, log, abs
+	["sin", "sin"],
+	["cos", "cos"],
+	["tan", "tan"],
+	["cot", "cot"],
+	["asin", "asin"],
+	["acos", "acos"],
+	["atan", "atan"],
+	["acot", "acot"],
+	["log", "log"],
+	["ln", "ln"],
+	["fact", "fact"],
+	["abs", "abs"]
+]);
+
 function tryReadNum(input: string): number {
 	let num = "";
 	let isDecimal = false;
@@ -31,6 +47,18 @@ function tryReadNum(input: string): number {
 	return parseFloat(num);
 }
 
+function tryReadFunc(input: string): string | undefined {
+	for (let i = 1; i < Math.min(maxOpLength + 1, input.length); i++) {
+		const slice = input.slice(0, i);
+		const func = functions.get(slice);
+		if (func !== undefined) {
+			return func;
+		}
+	}
+
+	return undefined;
+}
+
 export function parse(input: string): Equation {
 	input = input.split(" ").join("").toLowerCase();
 	let result: Equation = [];
@@ -44,13 +72,18 @@ export function parse(input: string): Equation {
 			continue;
 		}
 
+		let func = tryReadFunc(input);
+		if (typeof func === 'string') {
+			operators.push(func);
+			input = input.slice(func.length);
+			continue;
+		}
+
 		if (input[0] == "x") {
 			result.push("x");
 			input = input.slice(1);
 			continue;
 		}
-
-		// TODO: operators longer then 1 character
 
 		if (input[0] == ")") {
 			while (operators[operators.length - 1] != "(") {

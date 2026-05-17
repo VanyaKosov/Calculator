@@ -1,5 +1,6 @@
 import type { Equation } from './parser';
 import type { Parameters } from './parameters';
+import { abs, acos, acot, asin, atan, cos, cot, fact, log, sin, tan } from './math';
 
 const tupleOperations = new Map<string, { (a: number, b: number): number }>([
     ["-", (a: number, b: number): number => { return b - a }],
@@ -10,6 +11,18 @@ const tupleOperations = new Map<string, { (a: number, b: number): number }>([
 ]);
 
 const singleOperations = new Map<string, { (a: number): number }>([
+    ["sin", (a: number): number => { return sin(a) }],
+    ["cos", (a: number): number => { return cos(a) }],
+    ["tan", (a: number): number => { return tan(a) }],
+    ["cot", (a: number): number => { return cot(a) }],
+    ["asin", (a: number): number => { return asin(a) }],
+    ["acos", (a: number): number => { return acos(a) }],
+    ["atan", (a: number): number => { return atan(a) }],
+    ["acot", (a: number): number => { return acot(a) }],
+    ["log", (a: number): number => { return log(10, a) }],
+    ["ln", (a: number): number => { return log(Math.E, a) }],
+    ["fact", (a: number): number => { return fact(a) }],
+    ["abs", (a: number): number => { return abs(a) }],
 ]);
 
 export class Pos {

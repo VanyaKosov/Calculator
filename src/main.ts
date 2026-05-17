@@ -11,6 +11,7 @@ const xMax = document.getElementById("x_max")! as HTMLInputElement;
 const yMin = document.getElementById("y_min")! as HTMLInputElement;
 const yMax = document.getElementById("y_max")! as HTMLInputElement;
 const userEquation = document.getElementById("equation")! as HTMLInputElement;
+const drawingSteps = document.getElementById("drawing_steps")! as HTMLInputElement;
 
 function updateOnClick() {
 	errorMessage.textContent = "";
@@ -26,7 +27,10 @@ function updateOnClick() {
 		);
 
 		drawAxis(params);
-		const approximatedFunction = approximateFunction(equation, params, 1000);
+
+		const numSteps = parseInt(drawingSteps.value);
+		if (isNaN(numSteps)) throw '"Drawing steps" must be defined'
+		const approximatedFunction = approximateFunction(equation, params, numSteps);
 		drawGraph(params, approximatedFunction);
 	} catch (error) {
 		errorMessage.textContent = error as string;
