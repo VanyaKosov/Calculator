@@ -32,7 +32,7 @@ function getStepSize(min: number, max: number): number {
     let stepSize: number = 1;
     while (true) {
         let numSteps: number = (max - min) / stepSize;
-        console.log("numSteps:", numSteps);
+        // console.log("numSteps:", numSteps);
         if (numSteps < minGrid) {
             stepSize /= gridFactor;
             continue;
@@ -72,12 +72,12 @@ export function drawAxis(params: Parameters): void {
     const xStart = Math.ceil(params.xMin / xStepSize) * xStepSize;
     const yStepSize = getStepSize(params.yMin, params.yMax);
     const yStart = Math.ceil(params.yMin / yStepSize) * yStepSize;
-    console.log("params:", params);
-    console.log("xStepSize:", xStepSize, "yStepSize", yStepSize);
+    // console.log("params:", params);
+    // console.log("xStepSize:", xStepSize, "yStepSize", yStepSize);
 
     for (let x = xStart; x <= params.xMax; x += xStepSize) {
         const canvasX = toCanvasX(x, params.xMin, params.xMax);
-        console.log("canvasX:", canvasX, "x:", x);
+        // console.log("canvasX:", canvasX, "x:", x);
         ctx.moveTo(canvasX, 0);
         ctx.lineTo(canvasX, canvas.height);
 
@@ -86,7 +86,7 @@ export function drawAxis(params: Parameters): void {
 
     for (let y = yStart; y <= params.yMax; y += yStepSize) {
         const canvasY = toCanvasY(y, params.yMin, params.yMax);
-        console.log("canvasY:", canvasY, "y:", y);
+        // console.log("canvasY:", canvasY, "y:", y);
         ctx.moveTo(0, canvasY);
         ctx.lineTo(canvas.width, canvasY);
 
