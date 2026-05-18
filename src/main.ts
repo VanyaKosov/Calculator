@@ -11,15 +11,18 @@ const xMax = document.getElementById("x_max")! as HTMLInputElement;
 const yMin = document.getElementById("y_min")! as HTMLInputElement;
 const yMax = document.getElementById("y_max")! as HTMLInputElement;
 const userEquation = document.getElementById("equation")! as HTMLInputElement;
+const drawingSteps = document.getElementById("drawing_steps")! as HTMLInputElement;
 const derivativeX = document.getElementById("derivative_x")! as HTMLInputElement;
 const derivativeValue = document.getElementById("derivative_value")! as HTMLInputElement;
-const drawingSteps = document.getElementById("drawing_steps")! as HTMLInputElement;
+const evaluationX = document.getElementById("evaluation_x")! as HTMLInputElement;
+const evaluationY = document.getElementById("evaluation_y")! as HTMLInputElement;
 
 const tangentColor = "rgb(200, 100, 23)";
 
 function updateOnClick() {
 	derivativeValue.textContent = "";
 	errorMessage.textContent = "";
+	evaluationY.textContent = "";
 	try {
 		const equation = parse(userEquation.value);
 		console.log(equation);
@@ -48,6 +51,12 @@ function updateOnClick() {
 			drawGraph(params, approximateFunction(parse(tangent), params, numSteps), tangentColor);
 
 			derivativeValue.textContent = deriv;
+		}
+
+		if (evaluationX.value !== "") {
+			let evaluatedValue = evaluate(equation, parseFloat(evaluationX.value)).toPrecision(3);
+			if (evaluatedValue === "Infinity" || evaluatedValue === "-Infinity") evaluatedValue = "undefined";
+			evaluationY.textContent = evaluatedValue;
 		}
 	} catch (error) {
 		errorMessage.textContent = error as string;
