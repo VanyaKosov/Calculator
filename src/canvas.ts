@@ -95,10 +95,10 @@ export function drawAxis(params: Parameters): void {
     ctx.stroke();
 }
 
-export function drawGraph(params: Parameters, segments: Pos[][]): void {
+export function drawGraph(params: Parameters, segments: Pos[][], color = style.graph.color): void {
     for (let segment of segments) {
         ctx.beginPath();
-        ctx.strokeStyle = style.graph.color;
+        ctx.strokeStyle = color;
         ctx.lineWidth = style.graph.thickness;
 
         for (let i = 0; i < segment.length - 1; i++) {

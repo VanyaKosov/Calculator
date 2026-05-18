@@ -24,7 +24,7 @@ const functions = new Map<string, string>([
 	["abs", "abs"]
 ]);
 
-function tryReadNum(input: string): number {
+function tryReadNum(input: string): string {
 	let num = "";
 	let isDecimal = false;
 	for (let i = 0; i < input.length; i++) {
@@ -44,7 +44,7 @@ function tryReadNum(input: string): number {
 		break;
 	}
 
-	return parseFloat(num);
+	return num;
 }
 
 function tryReadFunc(input: string): string | undefined {
@@ -59,7 +59,7 @@ function tryReadFunc(input: string): string | undefined {
 	return undefined;
 }
 
-export function tokenize(input: string): Equation { // temp export
+function tokenize(input: string): Equation { // temp export
 	let result: Equation = [];
 
 	while (input.length > 0) {
@@ -92,9 +92,10 @@ export function tokenize(input: string): Equation { // temp export
 		}
 
 		let num = tryReadNum(input);
-		if (!isNaN(num)) {
-			result.push(num);
-			input = input.slice(num.toString().length);
+		let parsedNum = parseFloat(num);
+		if (!isNaN(parsedNum)) {
+			result.push(parsedNum);
+			input = input.slice(num.length);
 			continue;
 		}
 	}
@@ -137,54 +138,6 @@ export function parse(input: string): Equation {
 		result.push(operators.pop()!);
 		operators.push(token);
 	}
-
-	/*while (input.length > 0) {
-		let num = tryReadNum(input);
-		if (!isNaN(num)) {
-			result.push(num);
-			input = input.slice(num.toString().length);
-			continue;
-		}
-
-		let func = tryReadFunc(input);
-		if (typeof func === 'string') {
-			operators.push(func);
-			input = input.slice(func.length);
-			continue;
-		}
-
-		if (input[0] == "x") {
-			result.push("x");
-			input = input.slice(1);
-			continue;
-		}
-
-		if (input[0] == ")") {
-			while (operators[operators.length - 1] != "(") {
-				if (operators.length == 0) throw "Incorrect equation";
-				result.push(operators.pop()!);
-			}
-			operators.pop();
-
-			input = input.slice(1);
-			continue;
-		}
-
-		if (input[0] == "(" ||
-			input[0] == "^" ||
-			operators.length == 0 ||
-			operators[operators.length - 1] == "(" ||
-			operatorWeight.get(operators[operators.length - 1])! < operatorWeight.get(input[0])!) {
-
-			operators.push(input[0]);
-			input = input.slice(1);
-			continue;
-		}
-
-		result.push(operators.pop()!);
-		operators.push(input[0]);
-		input = input.slice(1);
-	}*/
 
 	while (operators.length > 0) {
 		const val = operators.pop()!;

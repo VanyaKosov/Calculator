@@ -25,6 +25,8 @@ const singleOperations = new Map<string, { (a: number): number }>([
     ["abs", (a: number): number => { return abs(a) }],
 ]);
 
+const derivativePrecision = 1 / (10 ** 8)
+
 export class Pos {
     public x: number;
     public y: number;
@@ -98,4 +100,12 @@ export function approximateFunction(equation: Equation, params: Parameters, numS
     segments.push(segment);
 
     return segments;
+}
+
+export function derivative(equation: Equation, x: number): number {
+    const x1 = x - derivativePrecision;
+    const x2 = x + derivativePrecision;
+    const y1 = evaluate(equation, x1);
+    const y2 = evaluate(equation, x2);
+    return (y2 - y1) / (x2 - x1)
 }
