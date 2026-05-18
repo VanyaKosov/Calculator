@@ -21,7 +21,9 @@ const functions = new Map<string, string>([
 	["log", "log"],
 	["ln", "ln"],
 	["fact", "fact"],
-	["abs", "abs"]
+	["abs", "abs"],
+	["pi", "pi"],
+	["e", "e"]
 ]);
 
 function tryReadNum(input: string): string {
@@ -48,7 +50,7 @@ function tryReadNum(input: string): string {
 }
 
 function tryReadFunc(input: string): string | undefined {
-	for (let i = 1; i < Math.min(maxOpLength + 1, input.length); i++) {
+	for (let i = 1; i <= Math.min(maxOpLength, input.length); i++) {
 		const slice = input.slice(0, i);
 		const func = functions.get(slice);
 		if (func !== undefined) {
@@ -86,7 +88,14 @@ function tokenize(input: string): Equation { // temp export
 
 		let func = tryReadFunc(input);
 		if (func !== undefined) {
-			result.push(func);
+			if (func === "pi") {
+				result.push(Math.PI);
+			} else if (func === "e") {
+				result.push(Math.E);
+			} else {
+				result.push(func);
+			}
+
 			input = input.slice(func.length);
 			continue;
 		}
