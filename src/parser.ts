@@ -107,6 +107,8 @@ function tokenize(input: string): Equation { // temp export
 			input = input.slice(num.length);
 			continue;
 		}
+
+		throw "Incorrect equation";
 	}
 
 	return result;

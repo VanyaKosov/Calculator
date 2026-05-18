@@ -6,20 +6,36 @@ import { parse } from './parser';
 const updateButton = document.getElementById("update_button")! as HTMLButtonElement;
 updateButton.onclick = updateOnClick;
 const errorMessage = document.getElementById("error_message")! as HTMLLabelElement;
-const xMin = document.getElementById("x_min")! as HTMLInputElement;
-const xMax = document.getElementById("x_max")! as HTMLInputElement;
-const yMin = document.getElementById("y_min")! as HTMLInputElement;
-const yMax = document.getElementById("y_max")! as HTMLInputElement;
-const userEquation = document.getElementById("equation")! as HTMLInputElement;
-const drawingSteps = document.getElementById("drawing_steps")! as HTMLInputElement;
-const derivativeX = document.getElementById("derivative_x")! as HTMLInputElement;
+// const xMin = document.getElementById("x_min")! as HTMLInputElement;
+const xMin = findInput("x_min");
+// const xMax = document.getElementById("x_max")! as HTMLInputElement;
+const xMax = findInput("x_max");
+// const yMin = document.getElementById("y_min")! as HTMLInputElement;
+const yMin = findInput("y_min");
+// const yMax = document.getElementById("y_max")! as HTMLInputElement;
+const yMax = findInput("y_max");
+// const userEquation = document.getElementById("equation")! as HTMLInputElement;
+const userEquation = findInput("equation");
+// const drawingSteps = document.getElementById("drawing_steps")! as HTMLInputElement;
+const drawingSteps = findInput("drawing_steps");
+// const derivativeX = document.getElementById("derivative_x")! as HTMLInputElement;
+const derivativeX = findInput("derivative_x");
 const derivativeValue = document.getElementById("derivative_value")! as HTMLInputElement;
-const evaluationX = document.getElementById("evaluation_x")! as HTMLInputElement;
+// const evaluationX = document.getElementById("evaluation_x")! as HTMLInputElement;
+const evaluationX = findInput("evaluation_x");
 const evaluationY = document.getElementById("evaluation_y")! as HTMLInputElement;
 const showRoots = document.getElementById("show_roots")! as HTMLInputElement;
+showRoots.addEventListener('change', updateOnClick);
 const rootList = document.getElementById("root_list")! as HTMLTableElement;
 
 const tangentColor = "rgb(200, 100, 23)";
+
+function findInput(name: string): HTMLInputElement {
+	const element = document.getElementById(name)! as HTMLInputElement;
+	element.addEventListener('keyup', updateOnClick);
+
+	return element;
+}
 
 function updateOnClick() {
 	derivativeValue.textContent = "";
