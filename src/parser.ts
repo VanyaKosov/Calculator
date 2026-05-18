@@ -9,7 +9,7 @@ const operatorWeight = new Map<string, number>([
 ]);
 
 const maxOpLength: number = 4; // Length of the longest operator
-const functions = new Map<string, string>([ // TODO: factorial, log, abs
+const functions = new Map<string, string>([
 	["sin", "sin"],
 	["cos", "cos"],
 	["tan", "tan"],
@@ -59,12 +59,86 @@ function tryReadFunc(input: string): string | undefined {
 	return undefined;
 }
 
-export function parse(input: string): Equation {
-	input = input.split(" ").join("").toLowerCase();
+export function tokenize(input: string): Equation { // temp export
 	let result: Equation = [];
-	let operators: Array<string> = [];
 
 	while (input.length > 0) {
+		if (input[0] == "-") {
+			if (result.length > 0) {
+				if (result[result.length - 1] != "(") {
+					result.push("+");
+				}
+			}
+			result.push(-1, "*");
+			input = input.slice(1);
+			continue;
+		}
+
+		if (operatorWeight.get(input[0]) !== undefined
+			|| input[0] === "x"
+			|| input[0] == "("
+			|| input[0] == ")"
+			|| input[0] == "^") {
+			result.push(input[0]);
+			input = input.slice(1);
+			continue;
+		}
+
+		let func = tryReadFunc(input);
+		if (func !== undefined) {
+			result.push(func);
+			input = input.slice(func.length);
+			continue;
+		}
+
+		let num = tryReadNum(input);
+		if (!isNaN(num)) {
+			result.push(num);
+			input = input.slice(num.toString().length);
+			continue;
+		}
+	}
+
+	return result;
+}
+
+export function parse(input: string): Equation {
+	input = input.split(" ").join("").toLowerCase();
+	const tokens = tokenize(input);
+	let result: Equation = [];
+	let operators: string[] = [];
+
+	for (let token of tokens) {
+		if (typeof token === "number" || token === "x") {
+			result.push(token);
+			continue;
+		}
+
+		if (token == ")") {
+			while (operators[operators.length - 1] != "(") {
+				if (operators.length == 0) throw "Incorrect equation";
+				result.push(operators.pop()!);
+			}
+			operators.pop();
+
+			continue;
+		}
+
+		if (functions.get(token) !== undefined ||
+			token == "(" ||
+			token == "^" ||
+			operators.length == 0 ||
+			operators[operators.length - 1] == "(" ||
+			operatorWeight.get(operators[operators.length - 1])! < operatorWeight.get(token)!) {
+			operators.push(token);
+			continue;
+		}
+
+		result.push(operators.pop()!);
+		operators.push(token);
+	}
+
+	/*while (input.length > 0) {
 		let num = tryReadNum(input);
 		if (!isNaN(num)) {
 			result.push(num);
@@ -110,7 +184,7 @@ export function parse(input: string): Equation {
 		result.push(operators.pop()!);
 		operators.push(input[0]);
 		input = input.slice(1);
-	}
+	}*/
 
 	while (operators.length > 0) {
 		const val = operators.pop()!;
