@@ -3,16 +3,16 @@ import type { Parameters } from './parameters';
 
 const style = {
     grid: {
-        color: "rgb(200, 200, 200)",
+        color: "#B0BEC5",
         thickness: 1,
         font: "12px Arial"
     },
     axis: {
-        color: "rgb(0, 0, 0)",
+        color: "#263238",
         thickness: 3
     },
     graph: {
-        color: "rgb(56, 30, 219)",
+        color: "#2196F3",
         thickness: 2
     }
 };

@@ -1,6 +1,33 @@
 <!doctype html>
 <html lang="en">
 
+<style>
+	th.right {
+		text-align: right;
+	}
+
+	th.center {
+		text-align: center;
+	}
+
+	th.left {
+		text-align: left;
+	}
+
+	th.top {
+		vertical-align: top;
+	}
+
+	th.right-top {
+		text-align: right;
+		vertical-align: top;
+	}
+
+	body {
+		background-color: #FAFAFA;
+	}
+</style>
+
 <head>
 	<meta charset="UTF-8" />
 	<link rel="icon" type="image/png" href="/favicon.png" />
@@ -9,28 +36,123 @@
 </head>
 
 <body>
+	<table>
+		<th class="top">
+			<table>
+				<tr>
+					<th class="right">
+						<button id="update_button">Update</button>
+					</th>
+					<th class="center">
 
-	<canvas id="canvas" width="500" height="500"
-		style="border:1px solid #000000; background-color: aliceblue;"></canvas>
-	<div>
-		<button id="update_button">Update</button><label type="text" id="error_message" style="color: red"></label><br>
-		y=<input type="text" id="equation" value="x^2"><br>
-		<label>X min:</label> <input type="number" id="x_min" value="-10" placeholder="-10"><br>
-		<label>X max:</label> <input type="number" id="x_max" value="10" placeholder="10"><br>
-		<label>Y min:</label> <input type="number" id="y_min" value="-10" placeholder="-10"><br>
-		<label>Y max:</label> <input type="number" id="y_max" value="10" placeholder="10"><br>
-		Drawing steps:<input type="number" id="drawing_steps" value="10000" placeholder="10000"><br>
-		<label>Derivative at x=<input type="number" , id="derivative_x"> is:<label type="text"
-				id="derivative_value"></label></label><br>
-		<label>Function value at x=<input type="number" id="evaluation_x"> is: <label type="text"
-				id="evaluation_y"></label></label><br>
-		<label>Show roots <input type="checkbox" id="show_roots"></label></label> <br>
-		<table id="root_list">
-			<thead>
-				roots:
-			</thead>
-		</table>
-	</div>
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						y=
+					</th>
+					<th class="left">
+						<input type="text" id="equation" value="x^2" spellcheck="false">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						X min:
+					</th>
+					<th class="left">
+						<input type="number" id="x_min" value="-10" placeholder="-10">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						X max:
+					</th>
+					<th class="left">
+						<input type="number" id="x_max" value="10" placeholder="10">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Y min:
+					</th>
+					<th class="left">
+						<input type="number" id="y_min" value="-10" placeholder="-10">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Y max:
+					</th>
+					<th class="left">
+						<input type="number" id="y_max" value="10" placeholder="10">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Drawing steps:
+					</th>
+					<th class="left">
+						<input type="number" id="drawing_steps" value="10000" placeholder="10000">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Derivative at x=
+					</th>
+					<th class="left">
+						<input type="number" , id="derivative_x"><br>
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						is:
+					</th>
+					<th class="left">
+						<label type="text" id="derivative_value"></label>
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Function value at x=
+					</th>
+					<th class="left">
+						<input type="number" id="evaluation_x">
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						is:
+					</th>
+					<th class="left">
+						<label type="text" id="evaluation_y"></label></label>
+					</th>
+				</tr>
+				<tr>
+					<th class="right">
+						Show roots
+					</th>
+					<th class="left">
+						<input type="checkbox" id="show_roots"></label>
+					</th>
+				</tr>
+				<tr>
+					<th class="right-top">
+						roots:
+					</th>
+					<th class="left">
+						<table id="root_list"></table>
+					</th>
+				</tr>
+			</table>
+
+
+		</th>
+		<th class="top">
+			<canvas id="canvas" width="500rem" height="500rem"
+				style="border:0.1rem solid #263238; background-color: #ECEFF1;"></canvas><br>
+			<label type="text" id="error_message" style="color: #F44336" size="20rem"></label>
+		</th>
+	</table>
 	<script type="module" src="/src/main.ts">
 	</script>
 </body>
