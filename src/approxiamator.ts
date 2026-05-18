@@ -25,7 +25,9 @@ const singleOperations = new Map<string, { (a: number): number }>([
     ["abs", (a: number): number => { return abs(a) }],
 ]);
 
-const derivativePrecision = 1 / (10 ** 8)
+const precision = 1 / (10 ** 8);
+const newtonMethodMinDiff = 1 / (10 ** 12);
+const newtonMethodMaxAttempts = 10000;
 
 export class Pos {
     public x: number;
@@ -72,10 +74,10 @@ export function evaluate(equation: Equation, x: number): number {
     return pop();
 }
 
-export function approximateFunction(equation: Equation, params: Parameters, numSteps: number): Pos[][] {
+export function approximateFunction(equation: Equation, params: Parameters): Pos[][] {
     let segments: Pos[][] = [];
 
-    const stepSize = (params.xMax - params.xMin) / numSteps;
+    const stepSize = (params.xMax - params.xMin) / params.numSteps;
     let segment: Pos[] = [];
     let prevPos = new Pos(params.xMin, evaluate(equation, params.xMin));
     for (let x = params.xMin; x <= params.xMax; x += stepSize) {
@@ -103,9 +105,67 @@ export function approximateFunction(equation: Equation, params: Parameters, numS
 }
 
 export function derivative(equation: Equation, x: number): number {
-    const x1 = x - derivativePrecision;
-    const x2 = x + derivativePrecision;
+    const x1 = x - precision;
+    const x2 = x + precision;
     const y1 = evaluate(equation, x1);
     const y2 = evaluate(equation, x2);
     return (y2 - y1) / (x2 - x1)
+}
+
+// Newton's method
+function estimateRoot(equation: Equation, guess: number): number {
+    const getNextGuess = (): number => {
+        return guess - evaluate(equation, guess) / derivative(equation, guess);
+    };
+
+    let numAttempts = 0;
+    let nextGuess = getNextGuess();
+    while (Math.abs(nextGuess - guess) > newtonMethodMinDiff) {
+        guess = nextGuess;
+        nextGuess = getNextGuess();
+
+        numAttempts++;
+        if (numAttempts >= newtonMethodMaxAttempts) return NaN;
+    }
+
+    return nextGuess;
+}
+
+export function findRoots(equation: Equation, params: Parameters): number[] {
+    const stepSize = (params.xMax - params.xMin) / params.numSteps;
+
+    let roots: number[] = [];
+    const push = (n: number) => {
+        if (!roots.find((num) => {
+            return Math.abs(num - n) < precision;
+        })) {
+            roots.push(n);
+        }
+    };
+
+    let prevY = evaluate(equation, params.xMin);
+    let prevDeriv = derivative(equation, params.xMin);
+    for (let x = params.xMin + stepSize; x <= params.xMax; x += stepSize) {
+        const y = evaluate(equation, x);
+        const deriv = derivative(equation, x);
+        if ((prevY > 0 && y < 0) ||
+            (prevY < 0 && y > 0) ||
+            (prevDeriv > 0 && deriv < 0) ||
+            (prevDeriv < 0 && deriv > 0)) {
+
+            let estimate = estimateRoot(equation, x);
+            if (!isNaN(estimate) && estimate >= params.xMin && estimate <= params.xMax) {
+                push(estimate);
+            }
+        }
+
+        if (deriv == 0 && Math.abs(y) < newtonMethodMinDiff) {
+            push(x);
+        }
+
+        prevY = y;
+        prevDeriv = deriv;
+    }
+
+    return roots;
 }

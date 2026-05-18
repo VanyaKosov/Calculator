@@ -1,4 +1,4 @@
-import { approximateFunction, derivative, evaluate } from './approxiamator';
+import { approximateFunction, derivative, evaluate, findRoots } from './approxiamator';
 import { drawAxis, drawGraph } from './canvas';
 import { Parameters } from './parameters';
 import { parse } from './parser';
@@ -16,6 +16,8 @@ const derivativeX = document.getElementById("derivative_x")! as HTMLInputElement
 const derivativeValue = document.getElementById("derivative_value")! as HTMLInputElement;
 const evaluationX = document.getElementById("evaluation_x")! as HTMLInputElement;
 const evaluationY = document.getElementById("evaluation_y")! as HTMLInputElement;
+const showRoots = document.getElementById("show_roots")! as HTMLInputElement;
+const rootList = document.getElementById("root_list")! as HTMLTableElement;
 
 const tangentColor = "rgb(200, 100, 23)";
 
@@ -24,6 +26,10 @@ function updateOnClick() {
 	errorMessage.textContent = "";
 	evaluationY.textContent = "";
 	try {
+		for (let i = rootList.rows.length - 1; i >= 0; i--) {
+			rootList.deleteRow(i);
+		}
+
 		const equation = parse(userEquation.value);
 		console.log(equation);
 
@@ -32,13 +38,12 @@ function updateOnClick() {
 			parseFloat(xMax.value),
 			parseFloat(yMin.value),
 			parseFloat(yMax.value),
+			parseInt(drawingSteps.value)
 		);
 
 		drawAxis(params);
 
-		const numSteps = parseInt(drawingSteps.value);
-		if (isNaN(numSteps)) throw '"Drawing steps" must be defined'
-		const approximatedFunction = approximateFunction(equation, params, numSteps);
+		const approximatedFunction = approximateFunction(equation, params);
 		drawGraph(params, approximatedFunction);
 
 		if (derivativeX.value !== "") {
@@ -48,7 +53,7 @@ function updateOnClick() {
 			derivX *= -1;
 			const tangent = deriv + "*(x" + (derivX > 0 ? "+" : "") + derivX + ")" + (derivY > 0 ? "+" : "") + derivY;
 			console.log("tangent:", tangent);
-			drawGraph(params, approximateFunction(parse(tangent), params, numSteps), tangentColor);
+			drawGraph(params, approximateFunction(parse(tangent), params), tangentColor);
 
 			derivativeValue.textContent = deriv;
 		}
@@ -57,6 +62,14 @@ function updateOnClick() {
 			let evaluatedValue = evaluate(equation, parseFloat(evaluationX.value)).toPrecision(3);
 			if (evaluatedValue === "Infinity" || evaluatedValue === "-Infinity") evaluatedValue = "undefined";
 			evaluationY.textContent = evaluatedValue;
+		}
+
+		if (showRoots.checked) {
+			const roots = findRoots(equation, params);
+			for (let root of roots) {
+				const row = rootList.insertRow()
+				row.insertCell().innerText = root.toFixed(5);
+			}
 		}
 	} catch (error) {
 		errorMessage.textContent = error as string;

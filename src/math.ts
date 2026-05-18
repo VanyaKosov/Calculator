@@ -1,7 +1,7 @@
 const taylorDegree = 32;
 const precision = 1 / (10 ** 10)
 
-function sign(n: number): number {
+export function sign(n: number): number {
     if (n < 0) return -1;
     return 1;
 }
