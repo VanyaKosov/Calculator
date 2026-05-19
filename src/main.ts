@@ -76,7 +76,7 @@ function updateOnClick() {
 			const roots = findRoots(equation, params);
 			for (let root of roots) {
 				const row = rootList.insertRow()
-				row.insertCell().innerText = root.toFixed(5);
+				row.insertCell().innerText = root.toPrecision(3);
 			}
 		}
 	} catch (error) {
