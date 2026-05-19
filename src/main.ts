@@ -57,13 +57,13 @@ function updateOnClick() {
 		if (derivativeX.value !== "") {
 			let derivX = parseFloat(derivativeX.value);
 			const derivY = evaluate(equation, derivX);
-			const deriv = derivative(equation, derivX).toPrecision(3);
+			const deriv = derivative(equation, derivX);
 			derivX *= -1;
 			const tangent = deriv + "*(x" + (derivX >= 0 ? "+" : "") + derivX + ")" + (derivY >= 0 ? "+" : "") + derivY;
 			console.log("tangent:", tangent);
 			drawGraph(params, approximateFunction(parse(tangent), params), tangentColor);
 
-			derivativeValue.textContent = deriv;
+			derivativeValue.textContent = deriv.toPrecision(3);
 		}
 
 		if (evaluationX.value !== "") {
