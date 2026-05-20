@@ -11,7 +11,7 @@ This is a simple graphing calculator app.
 * Rendering of discontinuous functions
 * Derivative approximation and tangent line graphing
 * Function evaluation at a given x value
-* sin, cos, tan and cot functions are approximated with a 32-dergee Taylor polynomial
+* sin, cos, tan and cot functions are approximated with a 32-degree Taylor polynomial
 
 ### Supported Operations
 
@@ -44,6 +44,7 @@ This is a simple graphing calculator app.
 * The precision of the calculator is 8 decimals
 * No implicit operations. 2x must be written as 2*x
 * Number input in scientific notation is not supported
+* Error "Incorrect equation" means that either the equation entered is incorrect, or the derivative at the specified point cannot be calculated
 
 ## Sources
 

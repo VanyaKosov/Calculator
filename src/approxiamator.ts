@@ -83,7 +83,9 @@ export function approximateFunction(equation: Equation, params: Parameters): Pos
     for (let x = params.xMin; x <= params.xMax; x += stepSize) {
         const pos = new Pos(x, evaluate(equation, x));
         if (pos.y > params.yMax || pos.y < params.yMin) {
-            if (prevPos.y <= params.yMax && prevPos.y >= params.yMin) segment.push(pos);
+            if (prevPos.y <= params.yMax && prevPos.y >= params.yMin) {
+                segment.push(pos);
+            }
 
             if (segment.length > 0) {
                 segments.push(segment);
@@ -168,4 +170,22 @@ export function findRoots(equation: Equation, params: Parameters): number[] {
     }
 
     return roots;
+}
+
+export function integral(equation: Equation, params: Parameters, from: number, to: number): number {
+    const stepSize = (params.xMax - params.xMin) / (params.numSteps);
+
+    let sum = 0;
+    let prev = evaluate(equation, from);
+    for (let x = from + stepSize; x <= to; x += stepSize) {
+        const val = evaluate(equation, x);
+        sum += (prev + val) / 2 * stepSize;
+
+        if (sum === Infinity) return Infinity;
+        if (sum === -Infinity) return -Infinity;
+
+        prev = val;
+    }
+
+    return sum;
 }

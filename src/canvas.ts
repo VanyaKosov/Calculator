@@ -1,4 +1,4 @@
-import type { Pos } from './approxiamator';
+import { type Pos } from './approxiamator';
 import type { Parameters } from './parameters';
 
 const style = {
@@ -13,6 +13,10 @@ const style = {
     },
     graph: {
         color: "#2196F3",
+        thickness: 2
+    },
+    area: {
+        color: "#2195f315",
         thickness: 2
     }
 };
@@ -32,13 +36,13 @@ function toCanvasY(y: number, min: number, max: number): number {
     return canvas.height - (y - min) * (canvas.height / (max - min));
 }
 
-/*function toGraphX(x: number, min: number, max: number): number {
-    return (x + min) * ((max - min) / canvas.width);
-}
+// function toGraphX(x: number, min: number, max: number): number {
+//     return x * ((max - min) / canvas.width) + min;
+// }
 
-function toGraphY(y: number, min: number, max: number): number {
-    return canvas.height - (y + min) * ((max - min) / canvas.height);
-}*/
+// function toGraphY(y: number, min: number, max: number): number {
+//     return canvas.height - (y + min) * ((max - min) / canvas.height);
+// }
 
 function getStepSize(min: number, max: number): number {
     let stepSize: number = 1;
@@ -116,4 +120,27 @@ export function drawGraph(params: Parameters, segments: Pos[][], color = style.g
 
         ctx.stroke();
     }
+}
+
+export function shadeArea(params: Parameters, segments: Pos[][], from: number, to: number): void {
+    ctx.beginPath();
+    ctx.strokeStyle = style.area.color;
+    ctx.lineWidth = style.area.thickness;
+
+
+    for (let segment of segments) {
+        for (let i = 0; i < segment.length - 1; i++) {
+            const x = segment[i].x;
+            if (x < from || x > to) continue;
+            const canvasX = toCanvasX(x, params.xMin, params.xMax);
+            const canvasZeroY = toCanvasY(0, params.yMin, params.yMax);
+            const canvasY = toCanvasY(segment[i].y, params.yMin, params.yMax);
+            ctx.moveTo(canvasX, canvasZeroY);
+            ctx.lineTo(canvasX, canvasY);
+        }
+
+        ctx.stroke();
+    }
+
+    ctx.stroke();
 }
