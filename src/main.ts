@@ -114,7 +114,7 @@ function update() {
 			const roots = findRoots(equation, params);
 			for (let root of roots) {
 				const row = rootList.insertRow()
-				if (root < 1 / (10 ** (-8))) root = 0;
+				if (Math.abs(root) < 1 / (10 ** 8)) root = 0;
 				row.insertCell().innerText = root.toPrecision(5);
 			}
 		}
