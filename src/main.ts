@@ -1,5 +1,5 @@
-import { approximateFunction, derivative, evaluate, findRoots, integral } from './approxiamator';
-import { drawAxis, drawGraph, shadeArea } from './canvas';
+import { approximateFunction, derivative, evaluate, findRoots, integral, Pos } from './approxiamator';
+import { drawAxis, drawGraph, shadeArea, toGraphX, toGraphY } from './canvas';
 import { Parameters } from './parameters';
 import { parse } from './parser';
 
@@ -22,9 +22,12 @@ const integralValue = document.getElementById("integral_value")! as HTMLInputEle
 const showRoots = document.getElementById("show_roots")! as HTMLInputElement;
 showRoots.addEventListener('change', scheduleUpdate);
 const rootList = document.getElementById("root_list")! as HTMLTableElement;
+const canvas = document.getElementById("canvas")! as HTMLCanvasElement;
+canvas.addEventListener('wheel', scroll, false);
 
 const tangentColor = "#FF9800";
 let updateTimeout: number | undefined = undefined;
+const scrollMultiplier = 1.1;
 
 function findInput(name: string): HTMLInputElement {
 	const element = document.getElementById(name)! as HTMLInputElement;
@@ -43,6 +46,16 @@ function scheduleUpdate() {
 	}, 50);
 }
 
+function readParams(): Parameters {
+	return new Parameters(
+		parseFloat(xMin.value),
+		parseFloat(xMax.value),
+		parseFloat(yMin.value),
+		parseFloat(yMax.value),
+		parseInt(drawingSteps.value)
+	);
+}
+
 function update() {
 	derivativeValue.textContent = "";
 	errorMessage.textContent = "";
@@ -57,13 +70,7 @@ function update() {
 		const equation = parse(userEquation.value);
 		console.log(equation);
 
-		const params = new Parameters(
-			parseFloat(xMin.value),
-			parseFloat(xMax.value),
-			parseFloat(yMin.value),
-			parseFloat(yMax.value),
-			parseInt(drawingSteps.value)
-		);
+		const params = readParams();
 
 		drawAxis(params);
 
@@ -121,6 +128,36 @@ function update() {
 	} catch (error) {
 		errorMessage.textContent = error as string;
 	}
+}
+
+function scroll(event: WheelEvent) {
+	let mul = 1;
+	if (event.deltaY > 0) { // zoom out
+		mul *= scrollMultiplier;
+	} else if (event.deltaY < 0) { // zoom in
+		mul /= scrollMultiplier;
+	} else {
+		return;
+	}
+
+	let params = readParams();
+	let canvasPos = new Pos(event.x - canvas.getBoundingClientRect().left, event.y - canvas.getBoundingClientRect().top);
+	const oldPos = new Pos(toGraphX(canvasPos.x, params.xMin, params.xMax), toGraphY(canvasPos.y, params.yMin, params.yMax));
+
+	const newXMin = params.xMin * mul;
+	const newXMax = params.xMax * mul;
+	const newYMin = params.yMin * mul;
+	const newYMax = params.yMax * mul;
+
+	const newPos = new Pos(toGraphX(canvasPos.x, newXMin, newXMax), toGraphY(canvasPos.y, newYMin, newYMax));
+	const offset = new Pos(oldPos.x - newPos.x, oldPos.y - newPos.y);
+
+	xMin.value = (newXMin + offset.x).toString();
+	xMax.value = (newXMax + offset.x).toString();
+	yMin.value = (newYMin + offset.y).toString();
+	yMax.value = (newYMax + offset.y).toString();
+
+	update();
 }
 
 function main(): void {

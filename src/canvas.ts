@@ -36,13 +36,13 @@ function toCanvasY(y: number, min: number, max: number): number {
     return canvas.height - (y - min) * (canvas.height / (max - min));
 }
 
-// function toGraphX(x: number, min: number, max: number): number {
-//     return x * ((max - min) / canvas.width) + min;
-// }
+export function toGraphX(x: number, min: number, max: number): number {
+    return x * ((max - min) / canvas.width) + min;
+}
 
-// function toGraphY(y: number, min: number, max: number): number {
-//     return canvas.height - (y + min) * ((max - min) / canvas.height);
-// }
+export function toGraphY(y: number, min: number, max: number): number {
+    return max - y * ((max - min) / canvas.height);
+}
 
 function getStepSize(min: number, max: number): number {
     let stepSize: number = 1;
