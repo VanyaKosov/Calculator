@@ -8,6 +8,7 @@ This is a simple graphing calculator app.
 * Equation input allows spaces and is NOT case sensitive.
 * Resizable view window.
 * Graph can be zoomed in and out by using the mouse wheel.
+* Graph can be moved by dragging with the mouse.
 * Root finding using Newton's method.
 * Rendering of discontinuous functions.
 * Derivative approximation and tangent line graphing.

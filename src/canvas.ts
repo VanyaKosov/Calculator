@@ -127,19 +127,20 @@ export function shadeArea(params: Parameters, segments: Pos[][], from: number, t
     ctx.strokeStyle = style.area.color;
     ctx.lineWidth = style.area.thickness;
 
+    let prevCanvasX = toCanvasX(from, params.xMin, params.xMax);
+    const segment = segments[0];
+    for (let i = 0; i < segment.length - 1; i++) {
+        const x = segment[i].x;
+        if (x < from || x > to) continue;
+        const currCanvasX = toCanvasX(x, params.xMin, params.xMax);
+        if ((currCanvasX - prevCanvasX) < 0.5) continue;
+        prevCanvasX = currCanvasX;
 
-    for (let segment of segments) {
-        for (let i = 0; i < segment.length - 1; i++) {
-            const x = segment[i].x;
-            if (x < from || x > to) continue;
-            const canvasX = toCanvasX(x, params.xMin, params.xMax);
-            const canvasZeroY = toCanvasY(0, params.yMin, params.yMax);
-            const canvasY = toCanvasY(segment[i].y, params.yMin, params.yMax);
-            ctx.moveTo(canvasX, canvasZeroY);
-            ctx.lineTo(canvasX, canvasY);
-        }
-
-        ctx.stroke();
+        const canvasX = toCanvasX(x, params.xMin, params.xMax);
+        const canvasZeroY = toCanvasY(0, params.yMin, params.yMax);
+        const canvasY = toCanvasY(segment[i].y, params.yMin, params.yMax);
+        ctx.moveTo(canvasX, canvasZeroY);
+        ctx.lineTo(canvasX, canvasY);
     }
 
     ctx.stroke();

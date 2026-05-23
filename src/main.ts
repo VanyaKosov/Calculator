@@ -23,11 +23,16 @@ const showRoots = document.getElementById("show_roots")! as HTMLInputElement;
 showRoots.addEventListener('change', scheduleUpdate);
 const rootList = document.getElementById("root_list")! as HTMLTableElement;
 const canvas = document.getElementById("canvas")! as HTMLCanvasElement;
-canvas.addEventListener('wheel', scroll, false);
+canvas.addEventListener("wheel", scroll);
+canvas.addEventListener("mousedown", dragStart);
+canvas.addEventListener("mousemove", drag);
+canvas.addEventListener("mouseup", dragStop);
+canvas.addEventListener("mouseout", dragStop);
 
 const tangentColor = "#FF9800";
 let updateTimeout: number | undefined = undefined;
 const scrollMultiplier = 1.1;
+let prevGraphMousePos: Pos | undefined = undefined;
 
 function findInput(name: string): HTMLInputElement {
 	const element = document.getElementById(name)! as HTMLInputElement;
@@ -43,7 +48,7 @@ function scheduleUpdate() {
 	updateTimeout = setTimeout(() => {
 		updateTimeout = undefined;
 		update();
-	}, 50);
+	}, 10);
 }
 
 function readParams(): Parameters {
@@ -157,7 +162,35 @@ function scroll(event: WheelEvent) {
 	yMin.value = (newYMin + offset.y).toString();
 	yMax.value = (newYMax + offset.y).toString();
 
-	update();
+	scheduleUpdate();
+}
+
+function dragStart(event: MouseEvent) {
+	const params = readParams();
+	prevGraphMousePos = new Pos(toGraphX(event.x, params.xMin, params.xMax), toGraphY(event.y, params.yMin, params.yMax));
+}
+
+function drag(event: MouseEvent) {
+	if (prevGraphMousePos === undefined) return;
+	// if (mouseX < canvas.getBoundingClientRect().left
+	// 	|| mouseX > canvas.getBoundingClientRect().right
+	// 	|| mouseY < canvas.getBoundingClientRect().top
+	// 	|| mouseY > canvas.getBoundingClientRect().bottom) return;
+
+	const params = readParams();
+	const currentGraphMousePos = new Pos(toGraphX(event.x, params.xMin, params.xMax), toGraphY(event.y, params.yMin, params.yMax));
+	const offset = new Pos(prevGraphMousePos.x - currentGraphMousePos.x, prevGraphMousePos.y - currentGraphMousePos.y);
+
+	xMin.value = (params.xMin + offset.x).toString();
+	xMax.value = (params.xMax + offset.x).toString();
+	yMin.value = (params.yMin + offset.y).toString();
+	yMax.value = (params.yMax + offset.y).toString();
+
+	scheduleUpdate();
+}
+
+function dragStop() {
+	prevGraphMousePos = undefined;
 }
 
 function main(): void {
