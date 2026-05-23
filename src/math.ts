@@ -43,18 +43,18 @@ export function cos(n: number): number {
 
 export function tan(n: number): number {
     let sinVal = sin(n);
-    if (Math.abs(sinVal) < precision) return 0;
+    if (abs(sinVal) < precision) return 0;
     let cosVal = cos(n);
-    if (Math.abs(cosVal) < precision) return sign(sinVal) * Infinity;
+    if (abs(cosVal) < precision) return sign(sinVal) * Infinity;
 
     return sin(n) / cos(n);
 }
 
 export function cot(n: number): number {
     let cosVal = cos(n);
-    if (Math.abs(cosVal) < precision) return 0;
+    if (abs(cosVal) < precision) return 0;
     let sinVal = sin(n);
-    if (Math.abs(sinVal) < precision) return sign(cosVal) * Infinity;
+    if (abs(sinVal) < precision) return sign(cosVal) * Infinity;
 
     return cos(n) / sin(n);
 }
@@ -79,6 +79,14 @@ export function log(base: number, arg: number): number {
     return Math.log(arg) / Math.log(base);
 }
 
-export function abs(a: number): number {
-    return Math.abs(a);
+export function abs(n: number): number {
+    return Math.abs(n);
+}
+
+export function pow(base: number, numerator: number, denominator: number): number {
+    if (denominator === 0) throw "Denominator cannot be zero";
+    if (base >= 0) return base ** (numerator / denominator);
+    base = base ** numerator;
+    if (base >= 0) return base ** (1 / denominator);
+    return -1 * (abs(base) ** (1 / denominator));
 }

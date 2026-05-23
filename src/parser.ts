@@ -9,21 +9,22 @@ const operatorWeight = new Map<string, number>([
 ]);
 
 const maxOpLength: number = 4; // Length of the longest operator
-const functions = new Map<string, string>([
-	["sin", "sin"],
-	["cos", "cos"],
-	["tan", "tan"],
-	["cot", "cot"],
-	["asin", "asin"],
-	["acos", "acos"],
-	["atan", "atan"],
-	["acot", "acot"],
-	["log", "log"],
-	["ln", "ln"],
-	["fact", "fact"],
-	["abs", "abs"],
-	["pi", "pi"],
-	["e", "e"]
+const functions = new Map<string, number>([ // Value is number of parameters
+	["sin", 1],
+	["cos", 1],
+	["tan", 1],
+	["cot", 1],
+	["asin", 1],
+	["acos", 1],
+	["atan", 1],
+	["acot", 1],
+	["log", 1], // TODO: any base
+	["ln", 1],
+	["fact", 1],
+	["abs", 1],
+	["pow", 3],
+	["pi", 0],
+	["e", 0]
 ]);
 
 function tryReadNum(input: string): string {
@@ -54,7 +55,7 @@ function tryReadFunc(input: string): string | undefined {
 		const slice = input.slice(0, i);
 		const func = functions.get(slice);
 		if (func !== undefined) {
-			return func;
+			return slice;
 		}
 	}
 
@@ -65,6 +66,11 @@ function tokenize(input: string): Equation { // temp export
 	let result: Equation = [];
 
 	while (input.length > 0) {
+		if (input[0] == ",") {
+			input = input.slice(1);
+			continue;
+		}
+
 		if (input[0] == "-") {
 			if (result.length > 0) {
 				if (result[result.length - 1] != "(") {

@@ -1,6 +1,10 @@
 import type { Equation } from './parser';
 import type { Parameters } from './parameters';
-import { abs, acos, acot, asin, atan, cos, cot, fact, log, sin, tan } from './math';
+import { abs, acos, acot, asin, atan, cos, cot, fact, log, pow, sin, tan } from './math';
+
+const tripleOperations = new Map<string, { (a: number, b: number, c: number): number }>([
+    ["pow", (a: number, b: number, c: number): number => { return pow(c, b, a) }],
+]);
 
 const tupleOperations = new Map<string, { (a: number, b: number): number }>([
     ["-", (a: number, b: number): number => { return b - a }],
@@ -8,6 +12,7 @@ const tupleOperations = new Map<string, { (a: number, b: number): number }>([
     ["*", (a: number, b: number): number => { return b * a }],
     ["/", (a: number, b: number): number => { return b / a }],
     ["^", (a: number, b: number): number => { return b ** a }],
+    ["log", (a: number, b: number): number => { return log(b, a) }],
 ]);
 
 const singleOperations = new Map<string, { (a: number): number }>([
@@ -19,7 +24,6 @@ const singleOperations = new Map<string, { (a: number): number }>([
     ["acos", (a: number): number => { return acos(a) }],
     ["atan", (a: number): number => { return atan(a) }],
     ["acot", (a: number): number => { return acot(a) }],
-    ["log", (a: number): number => { return log(10, a) }],
     ["ln", (a: number): number => { return log(Math.E, a) }],
     ["fact", (a: number): number => { return fact(a) }],
     ["abs", (a: number): number => { return abs(a) }],
@@ -58,9 +62,14 @@ export function evaluate(equation: Equation, x: number): number {
             continue;
         }
 
+        const tripleOperation = tripleOperations.get(val);
+        if (tripleOperation) {
+            stack.push(tripleOperation(pop(), pop(), pop()));
+            continue;
+        }
+
         const tupleOperation = tupleOperations.get(val);
         if (tupleOperation) {
-
             stack.push(tupleOperation(pop(), pop()));
             continue;
         }
