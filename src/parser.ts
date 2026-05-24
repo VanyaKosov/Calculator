@@ -66,14 +66,9 @@ function tokenize(input: string): Equation { // temp export
 	let result: Equation = [];
 
 	while (input.length > 0) {
-		if (input[0] == ",") {
-			input = input.slice(1);
-			continue;
-		}
-
 		if (input[0] == "-") {
 			if (result.length > 0) {
-				if (result[result.length - 1] != "(") {
+				if (result[result.length - 1] != "(" && result[result.length - 1] != ",") {
 					result.push("+");
 				}
 			}
@@ -86,7 +81,8 @@ function tokenize(input: string): Equation { // temp export
 			|| input[0] === "x"
 			|| input[0] == "("
 			|| input[0] == ")"
-			|| input[0] == "^") {
+			|| input[0] == "^"
+			|| input[0] == ",") {
 			result.push(input[0]);
 			input = input.slice(1);
 			continue;
@@ -127,6 +123,10 @@ export function parse(input: string): Equation {
 	let operators: string[] = [];
 
 	for (let token of tokens) {
+		if (token === ",") {
+			continue;
+		}
+
 		if (typeof token === "number" || token === "x") {
 			result.push(token);
 			continue;
