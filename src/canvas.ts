@@ -29,11 +29,11 @@ const canvas = document.getElementById("canvas")! as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
 
 function toCanvasX(x: number, min: number, max: number): number {
-    return (x - min) * (canvas.width / (max - min));
+    return (x - min) * canvas.width / (max - min);
 }
 
 function toCanvasY(y: number, min: number, max: number): number {
-    return canvas.height - (y - min) * (canvas.height / (max - min));
+    return canvas.height - (y - min) * canvas.height / (max - min);
 }
 
 export function toGraphX(x: number, min: number, max: number): number {
@@ -93,7 +93,7 @@ export function drawAxis(params: Parameters): void {
         ctx.moveTo(canvasX, 0);
         ctx.lineTo(canvasX, canvas.height);
 
-        ctx.fillText(x.toPrecision(2), canvasX + 2, canvas.height - 6);
+        ctx.fillText(x.toPrecision(3), canvasX + 2, canvas.height - 6);
     }
 
     for (let y = yStart; y <= params.yMax; y += yStepSize) {
@@ -101,7 +101,7 @@ export function drawAxis(params: Parameters): void {
         ctx.moveTo(0, canvasY);
         ctx.lineTo(canvas.width, canvasY);
 
-        ctx.fillText(y.toPrecision(2), 0, canvasY - 5);
+        ctx.fillText(y.toPrecision(3), 0, canvasY - 5);
     }
 
     ctx.stroke();
@@ -122,25 +122,21 @@ export function drawGraph(params: Parameters, segments: Pos[][], color = style.g
     }
 }
 
-export function shadeArea(params: Parameters, segments: Pos[][], from: number, to: number): void {
+export function shadeArea(params: Parameters, segment: Pos[], from: number, to: number): void {
     ctx.beginPath();
     ctx.strokeStyle = style.area.color;
     ctx.lineWidth = style.area.thickness;
 
-    let prevCanvasX = toCanvasX(from, params.xMin, params.xMax);
-    const segment = segments[0];
     for (let i = 0; i < segment.length - 1; i++) {
         const x = segment[i].x;
-        if (x < from || x > to) continue;
+        if (x > to) break;
+        if (x < from) continue;
         const currCanvasX = toCanvasX(x, params.xMin, params.xMax);
-        if ((currCanvasX - prevCanvasX) < 0.5) continue;
-        prevCanvasX = currCanvasX;
 
-        const canvasX = toCanvasX(x, params.xMin, params.xMax);
-        const canvasZeroY = toCanvasY(0, params.yMin, params.yMax);
+        const canvasZeroY = toCanvasY(params.yMin > 0 ? params.yMin : 0, params.yMin, params.yMax);
         const canvasY = toCanvasY(segment[i].y, params.yMin, params.yMax);
-        ctx.moveTo(canvasX, canvasZeroY);
-        ctx.lineTo(canvasX, canvasY);
+        ctx.moveTo(currCanvasX, canvasZeroY);
+        ctx.lineTo(currCanvasX, canvasY);
     }
 
     ctx.stroke();

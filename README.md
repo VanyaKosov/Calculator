@@ -45,6 +45,7 @@ This is a simple graphing calculator app.
 ## Limitations
 
 * The precision of the calculator is 8 decimals.
+* Minimum graphing view window is $10^{-8}$.
 * When using `^` operator, fractional exponents will be defined only for positive $x$ values. To calculate fractional exponents for all $x$ values, use `pow` function.
 * No implicit operations. `2x` must be written as `2*x`.
 * Number input in scientific notation is not supported.

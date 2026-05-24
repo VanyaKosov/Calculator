@@ -115,11 +115,11 @@ function update() {
 				throw '"Integral from" must be smaller than "Integral to"';
 			}
 
-			integralValue.textContent = integral(equation, params, integralFromVal, integralToVal).toPrecision(5);
+			integralValue.textContent = integral(equation, params.numSteps, integralFromVal, integralToVal).toPrecision(5);
 			const functionApproximationForIntegral = approximateFunction(equation, new Parameters(
-				integralFromVal, integralToVal, -Infinity, Infinity, params.numSteps
+				Math.max(integralFromVal, params.xMin), Math.min(integralToVal, params.xMax), -Infinity, Infinity, canvas.width
 			));
-			shadeArea(params, functionApproximationForIntegral, integralFromVal, integralToVal);
+			shadeArea(params, functionApproximationForIntegral[0], integralFromVal, integralToVal);
 		}
 
 		if (showRoots.checked) {
@@ -172,10 +172,6 @@ function dragStart(event: MouseEvent) {
 
 function drag(event: MouseEvent) {
 	if (prevGraphMousePos === undefined) return;
-	// if (mouseX < canvas.getBoundingClientRect().left
-	// 	|| mouseX > canvas.getBoundingClientRect().right
-	// 	|| mouseY < canvas.getBoundingClientRect().top
-	// 	|| mouseY > canvas.getBoundingClientRect().bottom) return;
 
 	const params = readParams();
 	const currentGraphMousePos = new Pos(toGraphX(event.x, params.xMin, params.xMax), toGraphY(event.y, params.yMin, params.yMax));
